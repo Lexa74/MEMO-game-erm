@@ -78,6 +78,40 @@
   font-style: normal;
   font-weight: 400;
   line-height: 32px;
-
   margin-bottom: -12px;
+}
+
+.powersContainer {
+  display: flex;
+  gap: 15px;
+}
+
+.toolTipPiphany {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 40vw;
+  top: 13vw;
+  z-index: 1;
+  box-shadow: 0 0 100vh 100vh #00498099;
+  border-radius: 12px;
+}
+
+.toolTipAlohomora {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 45vw;
+  top: 13vw;
+  z-index: 1;
+  box-shadow: 0 0 100vh 100vh #00498099;
+  border-radius: 12px;
+}
+
+.buttonContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
 }

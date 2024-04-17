@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeAttempts, updateAttempts } from "../../store/slices";
 import { attemptForms, wordEndingChanger } from "../../helpers";
 import { getAllScore } from "../../api";
+import { AlohomoraPower } from "../Superpowers/AlohomoraPower";
+import { PiphanyPower } from "../Superpowers/PiphanyPower";
+import { ToolTips } from "../../utils/tooltips/tooltip";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -17,6 +20,8 @@ const STATUS_WON = "STATUS_WON";
 const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS";
 // Начало игры: игрок видит все карты в течении нескольких секунд
 const STATUS_PREVIEW = "STATUS_PREVIEW";
+// Игра на паузе
+const STATUS_PAUSED = "STATUS_PAUSED";
 
 function getTimerValue(startDate, endDate) {
   if (!startDate && !endDate) {
@@ -89,7 +94,12 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameStartDate(startDate);
     setTimer(getTimerValue(startDate, null));
     setStatus(STATUS_IN_PROGRESS);
+    setIsPiphanyAvailable(true);
+    setIsPiphanyHover(false);
+    setIsAlohomoraAvailable(true);
+    setIsAlohomoraHover(false);
   }
+
   function resetGame() {
     dispatch(removeAttempts());
     setGameStartDate(null);
@@ -246,6 +256,89 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   //устанавливаем корректное окончание слова "попытка" в зависимости от оставшегося числа попыток
   const attemptsText = wordEndingChanger.changeEnding(attempts, attemptForms);
 
+  //Реализация суперсил
+  const [isPiphanyAvailable, setIsPiphanyAvailable] = useState(true); // Доступно ли использование "Прозрение"
+  const [isAlohomoraAvailable, setIsAlohomoraAvailable] = useState(true); // Доступно ли использование "Алохомора"
+  const [isPiphanyHover, setIsPiphanyHover] = useState(false);
+  const [isAlohomoraHover, setIsAlohomoraHover] = useState(false);
+
+  const onPiphanyHover = () => {
+    setIsPiphanyHover(true);
+  };
+
+  const onPiphanyHoverLeave = () => {
+    setIsPiphanyHover(false);
+  };
+
+  const onAlohomoraHover = () => {
+    setIsAlohomoraHover(true);
+  };
+
+  const onAlohomoraHoverLeave = () => {
+    setIsAlohomoraHover(false);
+  };
+
+  //суперсила "Прозрение": На 5 секунд показываются все карты. Таймер длительности игры на это время останавливается.
+  function usePiphany() {
+    setStatus(STATUS_PAUSED);
+    setIsPiphanyAvailable(false);
+
+    const closedCards = cards.filter(card => !card.open);
+    cards.map(card => (card.open = true));
+
+    setCards(
+      cards.map(card => {
+        if (closedCards.includes(card)) {
+          return { ...card, open: false };
+        } else {
+          return card;
+        }
+      }),
+    );
+
+    // через 5 сек продолжать игру
+    setTimeout(() => {
+      setStatus(STATUS_IN_PROGRESS);
+    }, 5000);
+  }
+
+  //суперсила "Алохомора": Открывается случайная пара карт.
+  function useAlohomora() {
+    setIsAlohomoraAvailable(false);
+
+    const closedCards = cards.filter(card => !card.open);
+
+    const firstRandomIndex = Math.floor(Math.random() * closedCards.length);
+    const firstRandomCard = closedCards[firstRandomIndex];
+
+    closedCards.splice(firstRandomIndex, 1);
+
+    const secondRandomIndex = Math.floor(Math.random() * (closedCards.length - 1));
+    const secondRandomCard = closedCards[secondRandomIndex];
+
+    closedCards.splice(secondRandomIndex, 1);
+
+    setCards(
+      cards.map(card => {
+        if (card === firstRandomCard || card === secondRandomCard) {
+          return { ...card, open: true };
+        } else {
+          return card;
+        }
+      }),
+    );
+
+    //проверка на победу
+    const isPlayerWon = closedCards.every(card => card.open);
+
+    if (isPlayerWon) {
+      finishGame(STATUS_WON);
+      return;
+    }
+  }
+
+  const withoutSuperpowers = isPiphanyAvailable && isAlohomoraAvailable;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -260,15 +353,15 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
               <div className={styles.timer}>
                 <div className={styles.timerValue}>
                   <div className={styles.timerDescription}>min</div>
-                  <div>{timer.minutes.toString().padStart("2", "0")}</div>
+                  <div>{timer.minutes.toString().padStart(2, "0")}</div>
                 </div>
                 .
                 <div className={styles.timerValue}>
                   <div className={styles.timerDescription}>sec</div>
-                  <div>{timer.seconds.toString().padStart("2", "0")}</div>
+                  <div>{timer.seconds.toString().padStart(2, "0")}</div>
                 </div>
               </div>
-              {isEasyMode && status === STATUS_IN_PROGRESS ? (
+              {isEasyMode && (status === STATUS_IN_PROGRESS || status === STATUS_PAUSED) ? (
                 <div className={styles.attempts}>
                   <p>
                     Осталось <span>{attempts}</span>
@@ -279,9 +372,55 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        {status === STATUS_IN_PROGRESS || status === STATUS_PAUSED ? (
+          <div className={styles.buttonContainer}>
+            <div className={styles.powersContainer}>
+              {status === STATUS_IN_PROGRESS || status === STATUS_PAUSED ? (
+                <>
+                  <PiphanyPower
+                    isAvailable={isPiphanyAvailable}
+                    onClick={usePiphany}
+                    onMouseEnter={onPiphanyHover}
+                    onMouseLeave={onPiphanyHoverLeave}
+                    setIsPiphanyHover={setIsPiphanyHover}
+                    isAlohomoraHover={isAlohomoraHover}
+                    isAlohomoraAvailable={isAlohomoraAvailable}
+                  />
+                  <AlohomoraPower
+                    isAvailable={isAlohomoraAvailable}
+                    onClick={useAlohomora}
+                    onMouseEnter={onAlohomoraHover}
+                    onMouseLeave={onAlohomoraHoverLeave}
+                    setIsAlohomoraHover={setIsAlohomoraHover}
+                    isPiphanyHover={isPiphanyHover}
+                    isPiphanyAvailable={isPiphanyAvailable}
+                  />
+                  {(isPiphanyHover && isPiphanyAvailable) || (isAlohomoraHover && isAlohomoraAvailable) ? (
+                    <>
+                      {isPiphanyHover && isPiphanyAvailable && (
+                        <div className={isAlohomoraAvailable ? styles.toolTipPiphany : ""}>
+                          <ToolTips
+                            title={"Прозрение"}
+                            text={
+                              "На 5 секунд показываются все карты. Таймер длительности игры на это время останавливается."
+                            }
+                          />
+                        </div>
+                      )}
+                      {isAlohomoraHover && isAlohomoraAvailable && (
+                        <div className={isPiphanyAvailable ? styles.toolTipAlohomora : ""}>
+                          <ToolTips title={"Алохомора"} text={"Открывается случайная пара карт."} />
+                        </div>
+                      )}
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+            </div>
+            <Button onClick={resetGame}>Начать заново</Button>
+          </div>
+        ) : null}
       </div>
-
       <div className={styles.cards}>
         {cards.map(card => (
           <Card
@@ -293,7 +432,6 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         ))}
       </div>
-
       {isGameEnded ? (
         <div className={styles.modalContainer}>
           <EndGameModal
@@ -302,6 +440,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}
             isLeader={isLeader}
+            withoutSuperpowers={withoutSuperpowers}
           />
         </div>
       ) : null}

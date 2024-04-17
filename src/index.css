@@ -45,3 +45,14 @@ ol {
   font-family: "Roboto";
   src: url(../public/assets/fonts/Roboto-Regular.ttf);
 }
+
+@font-face {
+  font-family: "Inter";
+  src: url(../public/assets/fonts/Inter-Regular.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url(../public/assets/fonts/Inter-Bold.ttf);
+  font-weight: 700;
+}
