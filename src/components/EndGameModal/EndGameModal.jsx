@@ -5,8 +5,16 @@ import celebrationImageUrl from "./images/celebration.png";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { postUserScore } from "../../api";
+import { useSelector } from "react-redux";
 
-export function EndGameModal({ isLeader, isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
+export function EndGameModal({
+  isLeader,
+  isWon,
+  gameDurationSeconds,
+  gameDurationMinutes,
+  onClick,
+  withoutSuperpowers,
+}) {
   const [userName, setUserName] = useState(""); // Состояние для хранения введенного имени пользователя
 
   // Функция для обработки изменений в поле ввода имени
@@ -14,9 +22,25 @@ export function EndGameModal({ isLeader, isWon, gameDurationSeconds, gameDuratio
     setUserName(event.target.value); // Обновляем состояние с введенным именем
   };
 
+  //состояние легкого режима
+  const isEasyMode = useSelector(state => state.game.isEasyMode);
+
+  function achievements() {
+    const achievementsArray = [];
+    if (isEasyMode === false && withoutSuperpowers === true) {
+      achievementsArray.push(1, 2);
+    } else if (isEasyMode === false && withoutSuperpowers === false) {
+      achievementsArray.push(1);
+    } else if (isEasyMode === true && withoutSuperpowers === true) {
+      achievementsArray.push(2);
+    }
+    return achievementsArray;
+  }
+
   const handleAddLeader = () => {
     const nameToSend = userName.trim() !== "" ? userName : "Пользователь";
-    postUserScore({ name: nameToSend, time: gameDurationSeconds });
+    const achievementsToSend = achievements();
+    postUserScore({ name: nameToSend, time: gameDurationSeconds, achievements: achievementsToSend });
     onClick();
   };
 

@@ -1,5 +1,5 @@
 export function getAllScore() {
-  return fetch("https://wedev-api.sky.pro/api/leaderboard")
+  return fetch("https://wedev-api.sky.pro/api/v2/leaderboard")
     .then(response => {
       if (!response.ok) {
         throw new Error("Произошла ошибка сервера, попробуйте позже");
@@ -12,12 +12,13 @@ export function getAllScore() {
     });
 }
 
-export function postUserScore({ name, time }) {
-  return fetch("https://wedev-api.sky.pro/api/leaderboard", {
+export function postUserScore({ name, time, achievements }) {
+  return fetch("https://wedev-api.sky.pro/api/v2/leaderboard", {
     method: "POST",
     body: JSON.stringify({
       name: name,
       time: time,
+      achievements: achievements,
     }),
   })
     .then(response => {

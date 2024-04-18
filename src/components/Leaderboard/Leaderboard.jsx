@@ -10,18 +10,21 @@ export function Leaderboard() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useEffect(() => {
-    loadLeaderboardData(); // Загрузка данных лидерборда при монтировании компонента
+    loadLeaderboardData();
   }, []);
 
   const loadLeaderboardData = () => {
     getAllScore()
       .then(data => {
-        setLeaders(data.leaders); // Обновление данных лидерборда
+        setLeaders(data.leaders);
       })
       .catch(error => {
         console.error(error);
       });
   };
+
+  const isHardLevel = achievements => achievements && achievements.includes(1);
+  const isWithoutSuperpowers = achievements => achievements && achievements.includes(2);
 
   const handleAchievementHover = (achievement, index) => {
     setHoveredAchievement(achievement);
@@ -52,27 +55,39 @@ export function Leaderboard() {
                 <p className={styles.item}>{`# ${position}`}</p>
                 <p className={styles.itemName}>{leader.name}</p>
                 <div className={`${styles.itemContainer} ${styles.toolTipPiphany}`}>
-                  <img
-                    src="./no-puzzle.svg"
-                    alt="Достижение 'сложный режим' не открыто"
-                    onMouseEnter={() => handleAchievementHover("puzzle", index)}
-                    onMouseLeave={handleAchievementLeave}
-                  />
-                  {hoveredAchievement === "puzzle" && hoveredIndex === index && (
-                    <div className={styles.tooltipHardLevel}>
-                      <ToolTips text={"Игра пройдена в сложном режиме"} />
-                    </div>
+                  {isHardLevel(leader.achievements) ? (
+                    <>
+                      <img
+                        src="./puzzle.svg"
+                        alt="Достижение 'сложный режим' открыто"
+                        onMouseEnter={() => handleAchievementHover("puzzle", index)}
+                        onMouseLeave={handleAchievementLeave}
+                      />
+                      {hoveredAchievement === "puzzle" && hoveredIndex === index && (
+                        <div className={styles.tooltipHardLevel}>
+                          <ToolTips text={"Игра пройдена в сложном режиме"} />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <img src="./no-puzzle.svg" alt="Достижение 'сложный режим' не открыто" />
                   )}
-                  <img
-                    src="./no-magic_ball.svg"
-                    alt="Достижение 'не использовать суперсилы' не открыто"
-                    onMouseEnter={() => handleAchievementHover("magicBall", index)}
-                    onMouseLeave={handleAchievementLeave}
-                  />
-                  {hoveredAchievement === "magicBall" && hoveredIndex === index && (
-                    <div className={styles.tooltipWithoutSuperPower}>
-                      <ToolTips text={"Игра пройдена без супер-сил"} />
-                    </div>
+                  {isWithoutSuperpowers(leader.achievements) ? (
+                    <>
+                      <img
+                        src="./magic_ball.svg"
+                        alt="Достижение 'не использовать суперсилы' открыто"
+                        onMouseEnter={() => handleAchievementHover("magicBall", index)}
+                        onMouseLeave={handleAchievementLeave}
+                      />
+                      {hoveredAchievement === "magicBall" && hoveredIndex === index && (
+                        <div className={styles.tooltipWithoutSuperPower}>
+                          <ToolTips text={"Игра пройдена без супер-сил"} />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <img src="./no-magic_ball.svg" alt="Достижение 'не использовать суперсилы' не открыто" />
                   )}
                 </div>
                 <p className={styles.item}>{formatTime(leader.time)}</p>
