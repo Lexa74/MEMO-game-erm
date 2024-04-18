@@ -9,16 +9,15 @@ export function PiphanyPower({
   // isAlohomoraHover,
   // isAlohomoraAvailable,
 }) {
-  return isAvailable ? (
+  return (
     <div
       className={styles.superpowerContainer}
+      style={{ visibility: isAvailable ? "visible" : "hidden" }}
       onClick={onClick}
       onMouseEnter={() => onMouseEnter({ setIsPiphanyHover })}
       onMouseLeave={() => onMouseLeave({ setIsPiphanyHover })}
     >
       <img className={styles.superpowerIcon} src="../power-piphany.svg" alt="Суперсила прозрение" />
     </div>
-  ) : (
-    ""
   );
 }

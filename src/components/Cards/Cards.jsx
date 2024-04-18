@@ -288,7 +288,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
   //суперсила "Прозрение": На 5 секунд показываются все карты. Таймер длительности игры на это время останавливается.
   function usePiphany() {
-    // Очищаем предыдущий таймер, если он был установлен
+    // Очищаем предыдущий таймер
     clearTimeout(timeoutId);
 
     // Останавливаем таймер
@@ -410,7 +410,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                   {(isPiphanyHover && isPiphanyAvailable) || (isAlohomoraHover && isAlohomoraAvailable) ? (
                     <>
                       {isPiphanyHover && isPiphanyAvailable && (
-                        <div className={isAlohomoraAvailable ? styles.toolTipPiphany : ""}>
+                        <div className={styles.toolTipPiphany}>
                           <ToolTips
                             title={"Прозрение"}
                             text={
@@ -420,7 +420,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                         </div>
                       )}
                       {isAlohomoraHover && isAlohomoraAvailable && (
-                        <div className={isPiphanyAvailable ? styles.toolTipAlohomora : ""}>
+                        <div className={styles.toolTipAlohomora}>
                           <ToolTips title={"Алохомора"} text={"Открывается случайная пара карт."} />
                         </div>
                       )}
