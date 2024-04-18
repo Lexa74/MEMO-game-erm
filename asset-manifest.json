@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/react-memo/static/css/main.e5667453.css",
+    "main.js": "/react-memo/static/js/main.dc277dd5.js",
+    "static/media/Inter-Bold.ttf": "/react-memo/static/media/Inter-Bold.0eaf807b1cf0eceabe0f.ttf",
+    "static/media/Inter-Regular.ttf": "/react-memo/static/media/Inter-Regular.9ca9ba81e9dcaa12b3a1.ttf",
+    "static/media/Roboto-Regular.ttf": "/react-memo/static/media/Roboto-Regular.fc2b5060f7accec5cf74.ttf",
+    "static/media/Poppins-Regular.ttf": "/react-memo/static/media/Poppins-Regular.35d26b781dc5fda684cc.ttf",
+    "static/media/StratosSkyeng.woff2": "/react-memo/static/media/StratosSkyeng.ce93393e831d32412096.woff2",
+    "static/media/celebration.png": "/react-memo/static/media/celebration.2577e3c3835ac1f32429.png",
+    "static/media/dead.png": "/react-memo/static/media/dead.bfb3f81b5110f1b62252.png",
+    "static/media/сard-shirt.svg": "/react-memo/static/media/сard-shirt.4d53d3f942979a0dcb35c53a2889e78b.svg",
+    "static/media/cross.svg": "/react-memo/static/media/cross.7f91ce47ecbf6ae38498fefd7b1000b6.svg",
+    "index.html": "/react-memo/index.html",
+    "static/media/hearts.svg": "/react-memo/static/media/hearts.be33f4a44d6f0430c5e08883a0ad5e5b.svg",
+    "static/media/spades.svg": "/react-memo/static/media/spades.93f2e7c8261b046c228b40965b4493ec.svg",
+    "static/media/selected.svg": "/react-memo/static/media/selected.7038d0e4ca5b843af82c.svg",
+    "static/media/diamonds.svg": "/react-memo/static/media/diamonds.6d6202122f9a41366f7da20cfe4cf5b7.svg",
+    "main.e5667453.css.map": "/react-memo/static/css/main.e5667453.css.map",
+    "main.dc277dd5.js.map": "/react-memo/static/js/main.dc277dd5.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e5667453.css",
+    "static/js/main.dc277dd5.js"
+  ]
+}
