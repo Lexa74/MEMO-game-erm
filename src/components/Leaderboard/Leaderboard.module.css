@@ -13,7 +13,6 @@
   display: flex;
   justify-content: space-between;
   padding: 0 20px;
-  text-align: center;
   align-items: center;
 }
 
@@ -23,12 +22,48 @@
   color: #999;
 }
 
-.item {
-  width: 102px;
-  text-align: left;
+.itemContainer {
+  display: flex;
+  gap: 15px;
+  width: 112px;
+  position: relative;
 }
 
-.itemCenter {
-  width: 324px;
-  text-align: left;
+.item {
+  width: 107px;
+}
+
+.itemName {
+  width: 170px;
+  display: block;
+  line-height: 1.2em;
+  max-height: 2.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tooltipHardLevel,
+.tooltipWithoutSuperPower {
+  position: absolute;
+  z-index: 2;
+  bottom: 40px;
+  left: 0;
+}
+
+.tooltipWithoutSuperPower {
+  left: 40px;
+}
+
+.tooltipHardLevel::after,
+.tooltipWithoutSuperPower::after {
+  position: absolute;
+  left: 14px;
+  bottom: -10px;
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 14px solid #c2f5ff;
 }
