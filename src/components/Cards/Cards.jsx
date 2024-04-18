@@ -243,12 +243,20 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     };
   }, [status, pairsCount, previewSeconds]);
 
+  // Добавляем состояние для хранения идентификатора таймера
+  const [timeoutId, setTimeoutId] = useState(null);
+
   // Обновляем значение таймера в интервале
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTimer(getTimerValue(gameStartDate, gameEndDate));
     }, 300);
+
+    // Сохраняем идентификатор таймера в состоянии
+    setTimeoutId(intervalId);
+
     return () => {
+      // Очищаем таймер при размонтировании компонента или изменении зависимостей
       clearInterval(intervalId);
     };
   }, [gameStartDate, gameEndDate]);
@@ -280,26 +288,30 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
   //суперсила "Прозрение": На 5 секунд показываются все карты. Таймер длительности игры на это время останавливается.
   function usePiphany() {
+    // Очищаем предыдущий таймер, если он был установлен
+    clearTimeout(timeoutId);
+
+    // Останавливаем таймер
     setStatus(STATUS_PAUSED);
     setIsPiphanyAvailable(false);
 
-    const closedCards = cards.filter(card => !card.open);
-    cards.map(card => (card.open = true));
+    // Сохраняем текущее время
+    const currentTime = new Date().getTime();
 
-    setCards(
-      cards.map(card => {
-        if (closedCards.includes(card)) {
-          return { ...card, open: false };
-        } else {
-          return card;
-        }
-      }),
-    );
-
-    // через 5 сек продолжать игру
-    setTimeout(() => {
+    // Запускаем таймер через 5 секунд
+    const newTimeoutId = setTimeout(() => {
+      // Возобновляем игру и обновляем время начала игры
+      setGameStartDate(prevStartDate => {
+        // Вычисляем разницу времени между текущим временем и временем остановки таймера
+        const timeDifference = new Date().getTime() - currentTime;
+        // Возвращаем новое время начала игры, с учетом времени остановки таймера
+        return new Date(prevStartDate.getTime() + timeDifference);
+      });
       setStatus(STATUS_IN_PROGRESS);
     }, 5000);
+
+    // Обновляем состояние timeoutId
+    setTimeoutId(newTimeoutId);
   }
 
   //суперсила "Алохомора": Открывается случайная пара карт.
