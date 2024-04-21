@@ -58,7 +58,7 @@ export function Leaderboard() {
                   {isHardLevel(leader.achievements) ? (
                     <>
                       <img
-                        src="./puzzle.svg"
+                        src={process.env.PUBLIC_URL + "/puzzle.svg"}
                         alt="Достижение 'сложный режим' открыто"
                         onMouseEnter={() => handleAchievementHover("puzzle", index)}
                         onMouseLeave={handleAchievementLeave}
@@ -70,12 +70,12 @@ export function Leaderboard() {
                       )}
                     </>
                   ) : (
-                    <img src="./no-puzzle.svg" alt="Достижение 'сложный режим' не открыто" />
+                    <img src={process.env.PUBLIC_URL + "/no-puzzle.svg"} alt="Достижение 'сложный режим' не открыто" />
                   )}
                   {isWithoutSuperpowers(leader.achievements) ? (
                     <>
                       <img
-                        src="./magic_ball.svg"
+                        src={process.env.PUBLIC_URL + "/magic_ball.svg"}
                         alt="Достижение 'не использовать суперсилы' открыто"
                         onMouseEnter={() => handleAchievementHover("magicBall", index)}
                         onMouseLeave={handleAchievementLeave}
@@ -87,7 +87,10 @@ export function Leaderboard() {
                       )}
                     </>
                   ) : (
-                    <img src="./no-magic_ball.svg" alt="Достижение 'не использовать суперсилы' не открыто" />
+                    <img
+                      src={process.env.PUBLIC_URL + "/no-magic_ball.svg"}
+                      alt="Достижение 'не использовать суперсилы' не открыто"
+                    />
                   )}
                 </div>
                 <p className={styles.item}>{formatTime(leader.time)}</p>

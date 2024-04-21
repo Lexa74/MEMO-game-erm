@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { postUserScore } from "../../api";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export function EndGameModal({
   isLeader,
@@ -16,6 +17,7 @@ export function EndGameModal({
   withoutSuperpowers,
 }) {
   const [userName, setUserName] = useState(""); // Состояние для хранения введенного имени пользователя
+  const navigate = useNavigate();
 
   // Функция для обработки изменений в поле ввода имени
   const handleNameChange = event => {
@@ -41,7 +43,7 @@ export function EndGameModal({
     const nameToSend = userName.trim() !== "" ? userName : "Пользователь";
     const achievementsToSend = achievements();
     postUserScore({ name: nameToSend, time: gameDurationSeconds, achievements: achievementsToSend });
-    onClick();
+    navigate("/leaderboard");
   };
 
   const title = isWon ? (isLeader === true ? "Вы попали на Лидерборд!" : "Вы победили!") : "Вы проиграли!";
@@ -69,14 +71,25 @@ export function EndGameModal({
         {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}
       </div>
 
-      <Button onClick={handleAddLeader}>Начать сначала</Button>
       {isLeader ? (
-        <Link className={styles.leaderboardLink} to="/leaderboard" onClick={handleAddLeader}>
-          Перейти к лидерборду
-        </Link>
+        <div className={styles.buttons}>
+          <Button
+            onClick={() => {
+              handleAddLeader();
+            }}
+          >
+            Отправить
+          </Button>
+          <Link className={styles.leaderboardLink} to="/leaderboard">
+            Перейти к лидерборду
+          </Link>
+        </div>
       ) : (
         ""
       )}
+      <div>
+        <Button onClick={onClick}>Начать сначала</Button>
+      </div>
     </div>
   );
 }

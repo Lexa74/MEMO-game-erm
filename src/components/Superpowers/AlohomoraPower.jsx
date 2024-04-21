@@ -18,7 +18,11 @@ export function AlohomoraPower({
       onMouseEnter={() => onMouseEnter({ setIsAlohomoraHover })}
       onMouseLeave={() => onMouseLeave({ setIsAlohomoraHover })}
     >
-      <img className={styles.superpowerIcon} src="../power-alohomora.svg" alt="Суперсила алохомора" />
+      <img
+        className={styles.superpowerIcon}
+        src={process.env.PUBLIC_URL + "/power-alohomora.svg"}
+        alt="Суперсила алохомора"
+      />
     </div>
   );
 }

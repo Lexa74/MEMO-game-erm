@@ -17,7 +17,11 @@ export function PiphanyPower({
       onMouseEnter={() => onMouseEnter({ setIsPiphanyHover })}
       onMouseLeave={() => onMouseLeave({ setIsPiphanyHover })}
     >
-      <img className={styles.superpowerIcon} src="../power-piphany.svg" alt="Суперсила прозрение" />
+      <img
+        className={styles.superpowerIcon}
+        src={process.env.PUBLIC_URL + "/power-piphany.svg"}
+        alt="Суперсила прозрение"
+      />
     </div>
   );
 }

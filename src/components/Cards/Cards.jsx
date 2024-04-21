@@ -115,7 +115,25 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
    * - "Игрок проиграл", если на поле есть две открытые карты без пары
    * - "Игра продолжается", если не случилось первых двух условий
    */
+
+  const [openedCards, setOpenedCards] = useState([]);
+  const [isCardsBlocked, setIsCardsBlocked] = useState(false);
+
   const openCard = clickedCard => {
+    // Если карта уже открыта или карты заблокированы, то ничего не делаем
+    if (clickedCard.open || isCardsBlocked) {
+      return;
+    }
+
+    // Обновляем состояние открытых карт
+    const updatedOpenedCards = [...openedCards, clickedCard];
+    setOpenedCards(updatedOpenedCards);
+
+    // Если открыто две карты, блокируем все остальные
+    if (updatedOpenedCards.length === 2) {
+      setIsCardsBlocked(true);
+    }
+
     // Если карта уже открыта, то ничего не делаем
     if (clickedCard.open) {
       return;
@@ -185,6 +203,18 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return;
     }
   };
+
+  useEffect(() => {
+    if (isCardsBlocked) {
+      // Устанавливаем таймер для разблокировки карт через, например, 1 сек
+      const timeoutId = setTimeout(() => {
+        setIsCardsBlocked(false);
+        setOpenedCards([]);
+      }, 1000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isCardsBlocked]);
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
 
@@ -319,16 +349,13 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setIsAlohomoraAvailable(false);
 
     const closedCards = cards.filter(card => !card.open);
-
-    const firstRandomIndex = Math.floor(Math.random() * closedCards.length);
-    const firstRandomCard = closedCards[firstRandomIndex];
-
-    closedCards.splice(firstRandomIndex, 1);
-
-    const secondRandomIndex = Math.floor(Math.random() * (closedCards.length - 1));
-    const secondRandomCard = closedCards[secondRandomIndex];
-
-    closedCards.splice(secondRandomIndex, 1);
+    const firstRandomCard = closedCards[Math.floor(Math.random() * closedCards.length)];
+    const secondRandomCard = closedCards.find(
+      closedCard =>
+        closedCard.suit === firstRandomCard.suit &&
+        closedCard.rank === firstRandomCard.rank &&
+        firstRandomCard.id !== closedCard.id,
+    );
 
     setCards(
       cards.map(card => {
