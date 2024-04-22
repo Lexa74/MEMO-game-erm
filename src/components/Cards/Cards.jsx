@@ -245,7 +245,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           console.error(error);
         });
     }
-  }, [status, currentLevel]);
+  }, [status, currentLevel, timer]);
 
   // Игровой цикл
   useEffect(() => {
